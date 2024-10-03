@@ -1,0 +1,11 @@
+{
+  "name" : "Peter",
+  "age" : 3,
+  "eyes" :[
+     {
+      "right eye" : "blue",
+      "left eye"  : "red"
+     }
+     
+  ]
+}
