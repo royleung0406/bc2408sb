@@ -1,4 +1,4 @@
-package com.bootcamp.demo.demo_sb_restapi;
+package com.bootcamp2408.ex.sbex1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,13 +23,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 
 		// Inversion of control (IoC)
-public class DemoSbRestapiApplication {
+public class Sbex1Application {
 
 	public static ConfigurableApplicationContext context;
 
 	
 	public static void main(String[] args) {
-		context = SpringApplication.run(DemoSbRestapiApplication.class, args); //7*24
+		context = SpringApplication.run(Sbex1Application.class, args); //7*24
 	}
 
 }

@@ -1,11 +1,15 @@
 {
-  "name" : "Peter",
-  "age" : 3,
-  "eyes" :[
-     {
-      "right eye" : "blue",
-      "left eye"  : "red"
-     }
-     
-  ]
+  "name": "John",
+  "age": 13,
+  "eyes": [
+    {
+      "color": "RED"
+    },
+    {
+      "color": "RED"
+    }
+  ],
+  "tail": {
+    "length": 13.0
+  }
 }
