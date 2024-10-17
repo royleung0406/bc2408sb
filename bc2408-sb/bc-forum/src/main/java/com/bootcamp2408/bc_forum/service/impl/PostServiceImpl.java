@@ -8,27 +8,28 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import com.bootcamp2408.bc_forum.entity.UserEntity;
-import com.bootcamp2408.bc_forum.exception.JPHUserError;
-import com.bootcamp2408.bc_forum.mapper.UserMapper;
-import com.bootcamp2408.bc_forum.model.UserDTO;
-import com.bootcamp2408.bc_forum.repository.UserRepository;
-import com.bootcamp2408.bc_forum.service.UserService;
+import com.bootcamp2408.bc_forum.entity.PostEntity;
+import com.bootcamp2408.bc_forum.exception.JPHPostError;
+import com.bootcamp2408.bc_forum.mapper.PostMapper;
+import com.bootcamp2408.bc_forum.model.PostDTO;
+import com.bootcamp2408.bc_forum.repository.PostRepository;
+import com.bootcamp2408.bc_forum.service.PostService;
 import com.bootcamp2408.bc_forum.util.Scheme;
 import com.bootcamp2408.bc_forum.util.Url;
 
 
+
 @Service // Component annotation -> bean
-public class UserServiceImpl implements UserService {
-  @Autowired
+public class PostServiceImpl implements PostService {
+  @Autowired 
   // inject bean by speicifc bean name
   private RestTemplate restTemplate;
 
   @Autowired
-  private UserRepository userRepository;
+  private PostRepository postRepository;
 
   @Autowired
-  private UserMapper UserMapper;
+  private PostMapper PostMapper;
 
   // ! @Value (inject from yml) is similar to @Autowired (inject from Spring
   // Context)
@@ -36,50 +37,50 @@ public class UserServiceImpl implements UserService {
   @Value("${api.jph.domain}")
   private String jphDomain;
 
-  @Value("${api.jph.endpoints.users}")
-  private String usersEndpoint;
+  @Value("${api.jph.endpoints.posts}")
+  private String postsEndpoint;
 
   @Override
-  public List<UserDTO> getUsers() {
+  public List<PostDTO> getPosts() {
     // ! You can use UriComponentBuilder directly
     String url = Url.builder() //
         .scheme(Scheme.HTTPS) //
         .domain(this.jphDomain) //
-        .endpoint(this.usersEndpoint) //
+        .endpoint(this.postsEndpoint) //
         .build() //
         .toUriString();
     System.out.println("url=" + url);
-    UserDTO[] users;
+    PostDTO[] posts;
     try {
-      users  = this.restTemplate.getForObject(url, UserDTO[].class);
+      posts  = this.restTemplate.getForObject(url, PostDTO[].class);
     } catch (RestClientException e) {
-      throw new JPHUserError("Json PlaceHolder (users)Exception");
+      throw new JPHPostError("Json PlaceHolder (posts)Exception");
     } 
-    return List.of(users);
+    return List.of(posts);
   }
 
   @Override
-  public List<UserEntity> saveUsers() {
+  public List<PostEntity> savePosts() {
     // Call External JPH service
-    List<UserDTO> userDTOs = this.getUsers();
-    return this.saveUsers(userDTOs);
+    List<PostDTO> post = this.getPosts();
+    return this.savePosts(post);
   }
 
-  private List<UserEntity> saveUsers(List<UserDTO> userDTOs) {
+  private List<PostEntity> savePosts(List<PostDTO> postDTOs) {
     // Mapper: from List<UserDTO> to List<UserEntity>
-    List<UserEntity> userEntities = userDTOs.stream() //
-        .map(e -> this.UserMapper.map(e)) //
+    List<PostEntity> postEntities = postDTOs.stream() //
+        .map(e -> this.PostMapper.map(e)) //
         .collect(Collectors.toList());
-    return userRepository.saveAll(userEntities);
+    return postRepository.saveAll(postEntities);
   }
 
   @Override
-  public UserEntity updateUser(Long id, UserEntity entity) {
+  public PostEntity updatePost(Long id, PostEntity entity) {
     if (id == null || entity == null || !id.equals(entity.getId())) {
       throw new IllegalArgumentException();
     }
-    if (this.userRepository.findById(id).isPresent()) {
-      return this.userRepository.save(entity);
+    if (this.postRepository.findById(id).isPresent()) {
+      return this.postRepository.save(entity);
     }
     return null; // throw new NotFoundException()
 

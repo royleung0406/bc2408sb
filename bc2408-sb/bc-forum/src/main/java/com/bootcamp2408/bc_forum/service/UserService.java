@@ -7,7 +7,8 @@ import java.util.List;
 public interface UserService {
   List<UserDTO> getUsers();
   List<UserEntity> saveUsers();
-  
+  UserEntity updateUser(Long id, UserEntity entity);
+
 } 
   
 

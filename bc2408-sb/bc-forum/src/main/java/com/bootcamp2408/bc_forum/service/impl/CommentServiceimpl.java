@@ -8,27 +8,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import com.bootcamp2408.bc_forum.entity.UserEntity;
-import com.bootcamp2408.bc_forum.exception.JPHUserError;
-import com.bootcamp2408.bc_forum.mapper.UserMapper;
-import com.bootcamp2408.bc_forum.model.UserDTO;
-import com.bootcamp2408.bc_forum.repository.UserRepository;
-import com.bootcamp2408.bc_forum.service.UserService;
+import com.bootcamp2408.bc_forum.entity.CommentEntity;
+import com.bootcamp2408.bc_forum.exception.JPHCommentError;
+import com.bootcamp2408.bc_forum.mapper.CommentMapper;
+import com.bootcamp2408.bc_forum.model.CommentDTO;
+import com.bootcamp2408.bc_forum.repository.CommentRepository;
+import com.bootcamp2408.bc_forum.service.CommentService;
 import com.bootcamp2408.bc_forum.util.Scheme;
 import com.bootcamp2408.bc_forum.util.Url;
 
 
 @Service // Component annotation -> bean
-public class UserServiceImpl implements UserService {
+public class CommentServiceimpl implements CommentService {
   @Autowired
   // inject bean by speicifc bean name
   private RestTemplate restTemplate;
 
   @Autowired
-  private UserRepository userRepository;
+  private CommentRepository commentRepository;
 
   @Autowired
-  private UserMapper UserMapper;
+  private CommentMapper commentMapper;
 
   // ! @Value (inject from yml) is similar to @Autowired (inject from Spring
   // Context)
@@ -36,53 +36,57 @@ public class UserServiceImpl implements UserService {
   @Value("${api.jph.domain}")
   private String jphDomain;
 
-  @Value("${api.jph.endpoints.users}")
-  private String usersEndpoint;
+  @Value("${api.jph.endpoints.comments}")
+  private String commentsEndpoint;
 
   @Override
-  public List<UserDTO> getUsers() {
+  public List<CommentDTO> getComments() {
     // ! You can use UriComponentBuilder directly
     String url = Url.builder() //
         .scheme(Scheme.HTTPS) //
         .domain(this.jphDomain) //
-        .endpoint(this.usersEndpoint) //
+        .endpoint(this.commentsEndpoint) //
         .build() //
         .toUriString();
     System.out.println("url=" + url);
-    UserDTO[] users;
+    CommentDTO[] comments;
     try {
-      users  = this.restTemplate.getForObject(url, UserDTO[].class);
+      comments = this.restTemplate.getForObject(url, CommentDTO[].class);
     } catch (RestClientException e) {
-      throw new JPHUserError("Json PlaceHolder (users)Exception");
-    } 
-    return List.of(users);
+      throw new JPHCommentError("Json PlaceHolder (comments)Exception");
+    }
+    return List.of(comments);
   }
 
   @Override
-  public List<UserEntity> saveUsers() {
+  public List<CommentEntity> saveComments() {
     // Call External JPH service
-    List<UserDTO> userDTOs = this.getUsers();
-    return this.saveUsers(userDTOs);
+    List<CommentDTO> commentDTOs = this.getComments();
+    return this.saveComments(commentDTOs);
   }
 
-  private List<UserEntity> saveUsers(List<UserDTO> userDTOs) {
+  
+  private List<CommentEntity> saveComments(List<CommentDTO> commentDTOs) {
     // Mapper: from List<UserDTO> to List<UserEntity>
-    List<UserEntity> userEntities = userDTOs.stream() //
-        .map(e -> this.UserMapper.map(e)) //
-        .collect(Collectors.toList());
-    return userRepository.saveAll(userEntities);
+    List<CommentEntity> commentEntities = commentDTOs.stream()
+    .map(e-> commentMapper.map(e))//
+    .collect(Collectors.toList());
+    
+    return commentRepository.saveAll(commentEntities);
   }
+
+
 
   @Override
-  public UserEntity updateUser(Long id, UserEntity entity) {
+  public CommentEntity updateComment(Long id, CommentEntity entity) {
     if (id == null || entity == null || !id.equals(entity.getId())) {
       throw new IllegalArgumentException();
     }
-    if (this.userRepository.findById(id).isPresent()) {
-      return this.userRepository.save(entity);
+    if (this.commentRepository.findById(id).isPresent()) {
+      return this.commentRepository.save(entity);
     }
     return null; // throw new NotFoundException()
 
 
-}
+  }
 }

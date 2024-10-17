@@ -1,13 +1,14 @@
 package com.bootcamp2408.bc_forum.service;
 
-import org.hibernate.mapping.List;
-import com.bootcamp2408.bc_forum.entity.UserEntity;
-import com.bootcamp2408.bc_forum.model.UserDTO;
+
 import java.util.List;
+import com.bootcamp2408.bc_forum.entity.CommentEntity;
+import com.bootcamp2408.bc_forum.model.CommentDTO;
 
 public interface CommentService {
-  List <UserDTO> getUsers();
-  List <UserEntity> saveUsers();
+  List <CommentDTO> getComments();
+  List <CommentEntity> saveComments();
+  CommentEntity updateComment(Long id, CommentEntity entity);
   
 } 
   

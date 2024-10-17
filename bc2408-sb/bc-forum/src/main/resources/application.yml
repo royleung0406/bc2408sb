@@ -23,7 +23,7 @@ api:
     domain: "jsonplaceholder.typicode.com"
     endpoints:
       users: "/users" 
-      post: "/post" 
-      comment: "/comments" 
+      posts: "/posts" 
+      comments: "/comments" 
 
       

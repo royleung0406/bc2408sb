@@ -19,4 +19,14 @@ public class GlobalExceptionHandler {
   public String jphusers(){
     return "Json Placeholder Service (USers) Unavailable. Please try again later";
   }
+
+  @ExceptionHandler({JPHPostError.class})
+  public String jphposts(){
+    return "Json Placeholder Service (Posts) Unavailable. Please try again later";
+  }
+
+  @ExceptionHandler({JPHCommentError.class})
+  public String jphcomments(){
+    return "Json Placeholder Service (Comments) Unavailable. Please try again later";
+  }
 }
