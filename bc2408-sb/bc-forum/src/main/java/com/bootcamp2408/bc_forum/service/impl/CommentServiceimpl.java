@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import com.bootcamp2408.bc_forum.entity.CommentEntity;
 import com.bootcamp2408.bc_forum.exception.JPHCommentError;
 import com.bootcamp2408.bc_forum.mapper.CommentMapper;
-import com.bootcamp2408.bc_forum.model.CommentDTO;
+import com.bootcamp2408.bc_forum.model.Comment;
 import com.bootcamp2408.bc_forum.repository.CommentRepository;
 import com.bootcamp2408.bc_forum.service.CommentService;
 import com.bootcamp2408.bc_forum.util.Scheme;
@@ -40,7 +40,7 @@ public class CommentServiceimpl implements CommentService {
   private String commentsEndpoint;
 
   @Override
-  public List<CommentDTO> getComments() {
+  public List<Comment> getComments() {
     // ! You can use UriComponentBuilder directly
     String url = Url.builder() //
         .scheme(Scheme.HTTPS) //
@@ -49,9 +49,9 @@ public class CommentServiceimpl implements CommentService {
         .build() //
         .toUriString();
     System.out.println("url=" + url);
-    CommentDTO[] comments;
+    Comment[] comments;
     try {
-      comments = this.restTemplate.getForObject(url, CommentDTO[].class);
+      comments = this.restTemplate.getForObject(url, Comment[].class);
     } catch (RestClientException e) {
       throw new JPHCommentError("Json PlaceHolder (comments)Exception");
     }
@@ -61,12 +61,12 @@ public class CommentServiceimpl implements CommentService {
   @Override
   public List<CommentEntity> saveComments() {
     // Call External JPH service
-    List<CommentDTO> commentDTOs = this.getComments();
+    List<Comment> commentDTOs = this.getComments();
     return this.saveComments(commentDTOs);
   }
 
   
-  private List<CommentEntity> saveComments(List<CommentDTO> commentDTOs) {
+  private List<CommentEntity> saveComments(List<Comment> commentDTOs) {
     // Mapper: from List<UserDTO> to List<UserEntity>
     List<CommentEntity> commentEntities = commentDTOs.stream()
     .map(e-> commentMapper.map(e))//
@@ -79,7 +79,7 @@ public class CommentServiceimpl implements CommentService {
 
   @Override
   public CommentEntity updateComment(Long id, CommentEntity entity) {
-    if (id == null || entity == null || !id.equals(entity.getId())) {
+    if (id == null || entity == null || !id.equals(entity.getComment_id())) {
       throw new IllegalArgumentException();
     }
     if (this.commentRepository.findById(id).isPresent()) {

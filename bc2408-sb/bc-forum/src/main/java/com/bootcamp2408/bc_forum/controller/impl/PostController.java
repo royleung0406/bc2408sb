@@ -2,10 +2,11 @@ package com.bootcamp2408.bc_forum.controller.impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RestController;
 import com.bootcamp2408.bc_forum.controller.PostOperation;
 import com.bootcamp2408.bc_forum.entity.PostEntity;
-import com.bootcamp2408.bc_forum.model.PostDTO;
+import com.bootcamp2408.bc_forum.model.Post;
 import com.bootcamp2408.bc_forum.service.PostService;
 
 
@@ -19,7 +20,7 @@ public class PostController implements PostOperation {
   private PostService postService; // Interface
 
   @Override
-  public List<PostDTO> getPosts(){
+  public List<Post> getPosts(){
     return this.postService.getPosts();
   }
 
@@ -33,6 +34,11 @@ public class PostController implements PostOperation {
   @Override
   public PostEntity updatePost(Long id, PostEntity entity){
     return this.postService.updatePost(id, entity);
+  }
+
+  @Override
+  public List<PostEntity> findPostEntity(String title){
+    return this.postService.findPostEntity(title);
   }
 
  

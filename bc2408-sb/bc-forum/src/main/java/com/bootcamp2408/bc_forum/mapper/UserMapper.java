@@ -2,13 +2,13 @@ package com.bootcamp2408.bc_forum.mapper;
 
 import org.springframework.stereotype.Component;
 import com.bootcamp2408.bc_forum.entity.UserEntity;
-import com.bootcamp2408.bc_forum.model.UserDTO;
+import com.bootcamp2408.bc_forum.model.User;
 
 // JPHMapper -> object (bean) -> map()
 @Component
 public class UserMapper {
   // reivse from static method to instance
-  public UserEntity map(UserDTO userDTO) {
+  public UserEntity map(User userDTO) {
     return UserEntity.builder() //
         .addrLat(userDTO.getAddress().getGeo().getLat()) //
         .addrLng(userDTO.getAddress().getGeo().getLng()) //

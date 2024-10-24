@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import com.bootcamp2408.bc_forum.controller.UserOperation;
 import com.bootcamp2408.bc_forum.entity.UserEntity;
-import com.bootcamp2408.bc_forum.model.UserDTO;
+import com.bootcamp2408.bc_forum.model.User;
 import com.bootcamp2408.bc_forum.service.UserService;
 
 
@@ -19,7 +19,7 @@ public class UserController implements UserOperation {
   private UserService userService; // Interface
 
   @Override
-  public List<UserDTO> getUsers(){
+  public List<User> getUsers(){
     return this.userService.getUsers();
   }
 

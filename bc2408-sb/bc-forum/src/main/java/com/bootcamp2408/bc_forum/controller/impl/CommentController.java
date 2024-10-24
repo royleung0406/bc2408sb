@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import com.bootcamp2408.bc_forum.controller.CommentOperation;
 import com.bootcamp2408.bc_forum.entity.CommentEntity;
-import com.bootcamp2408.bc_forum.model.CommentDTO;
+import com.bootcamp2408.bc_forum.model.Comment;
 import com.bootcamp2408.bc_forum.service.CommentService;
 
 
@@ -19,7 +19,7 @@ public class CommentController implements CommentOperation {
   private CommentService commentService; // Interface
 
   @Override
-  public List<CommentDTO> getComments(){
+  public List<Comment> getComments(){
     return this.commentService.getComments();
   }
 

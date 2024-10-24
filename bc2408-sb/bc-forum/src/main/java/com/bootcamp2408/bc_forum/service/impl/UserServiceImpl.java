@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import com.bootcamp2408.bc_forum.entity.PostEntity;
 import com.bootcamp2408.bc_forum.entity.UserEntity;
 import com.bootcamp2408.bc_forum.exception.JPHUserError;
 import com.bootcamp2408.bc_forum.mapper.UserMapper;
-import com.bootcamp2408.bc_forum.model.UserDTO;
+import com.bootcamp2408.bc_forum.model.User;
 import com.bootcamp2408.bc_forum.repository.UserRepository;
 import com.bootcamp2408.bc_forum.service.UserService;
 import com.bootcamp2408.bc_forum.util.Scheme;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
   private String usersEndpoint;
 
   @Override
-  public List<UserDTO> getUsers() {
+  public List<User> getUsers() {
     // ! You can use UriComponentBuilder directly
     String url = Url.builder() //
         .scheme(Scheme.HTTPS) //
@@ -49,9 +50,9 @@ public class UserServiceImpl implements UserService {
         .build() //
         .toUriString();
     System.out.println("url=" + url);
-    UserDTO[] users;
+    User[] users;
     try {
-      users  = this.restTemplate.getForObject(url, UserDTO[].class);
+      users  = this.restTemplate.getForObject(url, User[].class);
     } catch (RestClientException e) {
       throw new JPHUserError("Json PlaceHolder (users)Exception");
     } 
@@ -61,11 +62,11 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<UserEntity> saveUsers() {
     // Call External JPH service
-    List<UserDTO> userDTOs = this.getUsers();
+    List<User> userDTOs = this.getUsers();
     return this.saveUsers(userDTOs);
   }
 
-  private List<UserEntity> saveUsers(List<UserDTO> userDTOs) {
+  private List<UserEntity> saveUsers(List<User> userDTOs) {
     // Mapper: from List<UserDTO> to List<UserEntity>
     List<UserEntity> userEntities = userDTOs.stream() //
         .map(e -> this.UserMapper.map(e)) //
@@ -75,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserEntity updateUser(Long id, UserEntity entity) {
-    if (id == null || entity == null || !id.equals(entity.getId())) {
+    if (id == null || entity == null || !id.equals(entity.getUser_id())) {
       throw new IllegalArgumentException();
     }
     if (this.userRepository.findById(id).isPresent()) {
@@ -84,5 +85,10 @@ public class UserServiceImpl implements UserService {
     return null; // throw new NotFoundException()
 
 
+}
+
+ @Override
+  public List<UserEntity> saveAll(List<UserEntity> userEntities) {
+  return userRepository.saveAll(userEntities);
 }
 }

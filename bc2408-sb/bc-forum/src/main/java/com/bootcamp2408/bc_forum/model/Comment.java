@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class CommentDTO {
+public class Comment {
+private Integer postId;
 private Integer id;
 private String name;
 private String email;

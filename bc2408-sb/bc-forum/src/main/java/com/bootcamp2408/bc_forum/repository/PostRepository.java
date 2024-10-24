@@ -1,6 +1,9 @@
 package com.bootcamp2408.bc_forum.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.bootcamp2408.bc_forum.entity.PostEntity;
 
@@ -13,6 +16,8 @@ import com.bootcamp2408.bc_forum.entity.PostEntity;
   // 3. JPA is java layer for developer to interact with Database/SQL/Tables
 @Repository // One of the component for Component Scan
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
+  @Query("SELECT p FROM PostEntity p WHERE p.title = :title")
+  List<PostEntity> findPostEntity(@Param("title") String title);
   // 1. save(): UserEntity & saveAll()
   // 2. findAll
 }

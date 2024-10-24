@@ -1,11 +1,15 @@
 package com.bootcamp2408.bc_forum.model;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
+@Data
+@Builder
 @ToString
-public class UserDTO {
+public class User {
   private Integer id;
   private String name;
   private String username;
@@ -16,25 +20,28 @@ public class UserDTO {
   private Company company;
 
   @Getter
+  @Builder
   @ToString
-  public class Address {
+  public static class Address {
     private String street;
     private String suite;
     private String city;
     private String zipcode;
     private Geo geo;
 
-    @Getter
-    @ToString
-    public class Geo {
+  @Getter
+  @Builder
+  @ToString
+    public static class Geo {
       private String lat;
       private String lng;
     }
   }
 
   @Getter
+  @Builder
   @ToString
-  public class Company {
+  public static class Company {
     private String name;
     private String catchPhrase;
     private String bs;

@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.bootcamp2408.bc_forum.entity.CommentEntity;
-import com.bootcamp2408.bc_forum.model.CommentDTO;
+import com.bootcamp2408.bc_forum.model.Comment;
 
 public interface CommentOperation {
 
 
   @GetMapping("/bcf/comments")
-  List<CommentDTO> getComments();
+  List<Comment> getComments();
 
   @PostMapping("/bcf/comments")
   List<CommentEntity> createComments();
