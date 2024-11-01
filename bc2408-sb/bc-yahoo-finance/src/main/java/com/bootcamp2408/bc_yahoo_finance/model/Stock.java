@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 
 public class Stock {
-
 private Integer id;
 private String symbol;
 }

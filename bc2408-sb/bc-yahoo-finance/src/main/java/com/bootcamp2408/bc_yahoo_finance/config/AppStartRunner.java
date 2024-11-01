@@ -1,63 +1,48 @@
 package com.bootcamp2408.bc_yahoo_finance.config;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import com.bootcamp2408.bc_yahoo_finance.Entity.StockEntity;
+import com.bootcamp2408.bc_yahoo_finance.Repositoy.QuoteRespository;
 import com.bootcamp2408.bc_yahoo_finance.Repositoy.StockRepository;
-import com.bootcamp2408.bc_yahoo_finance.infra.yahoo.CookieManager;
+import com.bootcamp2408.bc_yahoo_finance.Service.StockService;
 
 
-// @Autowired(required = false)
-// private CommandLineRunner runner;
-// runner.run();
 
 @Component
 public class AppStartRunner implements CommandLineRunner {
+  @Autowired
+  private StockService stockService;
+  @Autowired
+  private StockRepository stockRepository;
+  @Autowired
+  private QuoteRespository quoteRespository;
 
-@Autowired
-StockRepository stockRepository;
+  /**
+   * For System Design, there should be admin system for stock symbols setup. In
+   * case new stock launch in HKEX, our system control the right to support the
+   * new symbol.
+   * 
+   * The admin system should insert, update & delete the stock list. So, this
+   * SymbolConfig.class is just for exercise/ testing purpose.
+   */
+  @Override
+  public void run(String... args) {
+    // ! Clear all Stock Symbols in DB. (jpa.hibernate.ddl-auto: update)
+    // For rerun process.
+    this.quoteRespository.deleteAll();
+    this.stockRepository.deleteAll();
 
-
- private CookieManager cookieManager;
-
-@Override
-public void run(String... args) throws Exception {
-  
-    List<StockEntity> stockEntities = List.of(
-      new StockEntity("0388.HK"),
-      new StockEntity("0700.HK"),
-      new StockEntity("09988.HK")
-    );
-
-    this.stockRepository.saveAll(stockEntities);
-  //    try {
-  //           URL url = new URL("https://fc.yahoo.com");
-  //           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-  //           connection.setRequestMethod("GET");
-            
-  //           // Connect to the URL
-  //           connection.connect();
-            
-  //           // Get the response headers
-  //           Map<String, List<String>> headerFields = connection.getHeaderFields();
-  //           List<String> cookies = headerFields.get("Set-Cookie");
-
-  //           if (cookies != null) {
-  //               System.out.println("Cookies:");
-  //               for (String cookie : cookies) {
-  //                   System.out.println(cookie);
-  //               }
-  //           } else {
-  //               System.out.println("No cookies found in the response headers.");
-  //           }
-            
-  //           connection.disconnect();
-  //       } catch (Exception e) {
-  //           e.printStackTrace();
-  //       }
-      
-  // }
-}
-
+    String[] symbols = new String[] {"0388.HK", "0700.HK", "0005.HK"};
+    List<StockEntity> entities = Arrays.stream(symbols) //
+        .map(e -> StockEntity.builder().symbol(e).build()) //
+        .collect(Collectors.toList());
+    stockService.saveAll(entities);
+    System.out.println("Insert Stock Symbols Completed.");
+  }
 }

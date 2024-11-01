@@ -1,58 +1,45 @@
 package com.bootcamp2408.bc_yahoo_finance.infra.yahoo;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import com.bootcamp2408.bc_yahoo_finance.util.UrlManager;
 
-@Service
+
 public class CrumbManager {
-
-  @Autowired
+  // private static final String CRUMB_URL =
+  // "https://query1.finance.yahoo.com/v1/test/getcrumb";
+  private RestTemplate restTemplate;
   private CookieManager cookieManager;
 
-    private static final String CRUMB_URL = "https://query1.finance.yahoo.com/v1/test/getcrumb";
-    private RestTemplate restTemplate; // Tool A (Dependency of CookieManager)
+  public CrumbManager(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+    this.cookieManager = new CookieManager(restTemplate);
+  }
 
-  
+  public String getCrumb() {
+    // this.cookieStore.clear();
+    try {
+      String cookie = this.cookieManager.getCookie();
+      // System.out.println("cookie=" + cookie);
+      HttpHeaders headers = new HttpHeaders();
+      headers.add("Cookie", cookie);
+      HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
 
-    // Dependency Injection (Constructor Injection)
-    public CrumbManager(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+      String crumbUrl = UrlManager.builder() //
+          .domain(YahooFinance.DOMAIN) //
+          .version(YahooFinance.VERSION_CRUMB) //
+          .endpoint(YahooFinance.ENDPOINT_CRUMB) //
+          .build() //
+          .toUriString();
+
+      return restTemplate
+          .exchange(crumbUrl, HttpMethod.GET, entity, String.class) //
+          .getBody();
+    } catch (RestClientException e) {
+      return null;
     }
-
-    // Action B, requires Tool A and CookieManager
-    public String getCrumb() throws IOException, InterruptedException {
-            String cookies = this.cookieManager.getCookie();
-            System.out.println("cookie : " + cookies);
-        
-    
-        HttpClient client = HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.ALWAYS)
-                .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(CRUMB_URL))
-                .header("User-Agent", "Mozilla/5.0")
-                .header("Accept", "*/*")
-                .header("Cookie", cookies) // Pass cookies in the request
-                .GET()
-                .build();
-
-        HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        // The crumb is typically in the body of the response
-        String crumb = httpResponse.body();
-        System.out.println("Crumb: " + crumb);
-
-        return crumb;
-    }
-
-   
-    }
+  }
+}
